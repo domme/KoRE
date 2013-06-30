@@ -41,7 +41,15 @@ kore::Texture*
   std::vector<unsigned char> imageData;
   std::vector<unsigned char> buffer;
 
-  lodepng::load_file(buffer, filepath);
+  std::string loadFilePath = filepath;
+
+  lodepng::load_file(buffer, loadFilePath);
+
+  if (buffer.size() == 0) {
+    // Texture does not exist in the provided path -> try once again in the textures-folder
+    loadFilePath = "assets/textures/" + filepath;
+    lodepng::load_file(buffer, loadFilePath);
+  }
 
   uint width, height;
   lodepng::State pngState;
@@ -52,7 +60,7 @@ kore::Texture*
   if ( err != 0) {
     kore::Log::getInstance()->write("[ERROR] Failed to load texture '%s' :\n"
                                     "\t%s\n",
-                                    filepath.c_str(),
+                                    loadFilePath.c_str(),
                                     lodepng_error_text(err));
     return NULL;
   } else {
