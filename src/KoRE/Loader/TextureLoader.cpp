@@ -43,6 +43,11 @@ kore::Texture*
 
   lodepng::load_file(buffer, filepath);
 
+  if (buffer.size() == 0) {
+    // Texture does not exist in the provided path -> try once again in the textures-folder
+    lodepng::load_file(buffer, "assets/textures" + filepath);
+  }
+
   uint width, height;
   lodepng::State pngState;
   pngState.decoder.color_convert = false;
