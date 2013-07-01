@@ -79,7 +79,7 @@ kore::Texture*
       texProperties.format = GL_RGB;
       texProperties.pixelType = GL_UNSIGNED_BYTE; 
     } else if(color.colortype == LCT_RGBA) {
-      texProperties.internalFormat = GL_SRGB8_ALPHA8;
+      texProperties.internalFormat = GL_RGBA8;
       texProperties.format = GL_RGBA;
       texProperties.pixelType = GL_UNSIGNED_BYTE;
     }
