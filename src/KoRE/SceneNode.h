@@ -60,6 +60,7 @@ namespace kore {
     void addComponent(SceneNodeComponent* component);
     void setTag(const std::string& tagname);
     void setName(const std::string& name);
+    void inline setDirty(const bool dirty) {_dirty = dirty;}
 
     const bool needsUpdate(void) const;
     void update(void);
