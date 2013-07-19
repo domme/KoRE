@@ -86,6 +86,8 @@ class Camera : public SceneNodeComponent {
      bool isVisible(const glm::vec3& rSphereCenterWS,
                     const float fRadius) const;
 
+     void setProjectionMat(const glm::mat4& projMat);
+
      void setProjectionPersp(float yFov_deg, float fWidth,
                              float fHeight, float fNear, float fFar);
 

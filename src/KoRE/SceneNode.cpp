@@ -141,6 +141,7 @@ void kore::SceneNode::addChild(SceneNode* child) {
 void kore::SceneNode::addComponent(SceneNodeComponent* component) {
   _components.push_back(component);
   component->attachTo(this);
+  _dirty = true;
 }
 
 void kore::SceneNode::setTag(const std::string& tagname) {

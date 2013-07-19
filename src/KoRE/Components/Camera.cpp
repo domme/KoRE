@@ -228,6 +228,13 @@ void kore::Camera::setProjectionPersp(float yFov_deg, float fAspect,
   paramsChanged();
 }
 
+
+void kore::Camera::setProjectionMat(const glm::mat4& projMat) {
+  _matProjection = projMat;
+  paramsChanged();
+}
+
+
 void kore::Camera::paramsChanged() {
     _matViewProj = _matProjection * _matView;
     updateFrustumPlanes();
