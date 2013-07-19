@@ -53,6 +53,8 @@ const aiScene* kore::SceneLoader::readScene(const std::string& szScenePath) {
     aiProcess_JoinIdenticalVertices
     | aiProcess_Triangulate
     | aiProcess_CalcTangentSpace
+    | aiProcess_RemoveRedundantMaterials
+    
     );
 
   if (!pAiScene) {
