@@ -135,6 +135,8 @@ void kore::FrameBuffer::addTextureAttachment(Texture* tex,
     TextureSampler::getSamplerTypeFromTexType(tex->getProperties().targetType);
   textureData->data = texInfo;
   textureData->component = NULL;
+
+  _attachments[attachment] = tex;
 }
 
 void kore::FrameBuffer::
