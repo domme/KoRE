@@ -83,7 +83,7 @@ void kore::FrameBufferStage::
 }
 
 void kore::FrameBufferStage::
-  setFrameBuffer(const FrameBuffer* frameBuffer) {
+  setFrameBuffer(FrameBuffer* frameBuffer) {
 
   for (uint i = 0; i < _internalStartup.size(); ++i) {
     KORE_SAFE_DELETE(_internalStartup[i]);
