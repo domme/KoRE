@@ -26,7 +26,7 @@
 #include <algorithm>
 
 // Create the backbuffer as a static const pointer.
-const kore::FrameBuffer* kore::FrameBuffer::BACKBUFFER = new kore::FrameBuffer(0);
+kore::FrameBuffer* kore::FrameBuffer::BACKBUFFER = new kore::FrameBuffer(0);
 
 kore::FrameBuffer::FrameBuffer(const std::string& name)
 : _name(name),

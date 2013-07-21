@@ -425,8 +425,11 @@ kore::ShaderProgram::getUniform(const std::string& name) const {
 
 void kore::ShaderProgram::setSamplerProperties(const uint idx,
                                    const TexSamplerProperties& properties) {
-  if (idx > _vSamplers.size() - 1
-      || properties == _vSamplers[idx]->getProperties()) {
+  if (idx > _vSamplers.size() - 1 || _vSamplers.empty()) {
+    return;
+  }
+
+  if (properties == _vSamplers[idx]->getProperties()) {
         return;
   }
 

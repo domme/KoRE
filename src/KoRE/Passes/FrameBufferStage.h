@@ -42,12 +42,12 @@ namespace kore {
       getInternalStartupOperations() {return _internalStartup;}
     inline std::vector<Operation*>&
       getInternalFinishOperations() {return _internalFinish;}
-    inline const FrameBuffer* getFrameBuffer() {return _frameBuffer;}
+    inline FrameBuffer* getFrameBuffer() {return _frameBuffer;}
     inline const std::vector<GLenum>& getActiveAttachments() {return _activeBuffers;}
 
     void setActiveAttachments(const std::vector<GLenum>& activeBuffers);
 
-    void setFrameBuffer(const kore::FrameBuffer* frameBuffer);
+    void setFrameBuffer(kore::FrameBuffer* frameBuffer);
 
     void addProgramPass(ShaderProgramPass* progPass);
 
@@ -67,8 +67,8 @@ namespace kore {
     inline void setExecuted(bool executed) {_executed = executed;}
     inline const bool getExecuted() const {return _executed;}
 
-  private:
-    const FrameBuffer* _frameBuffer;
+  protected:
+    FrameBuffer* _frameBuffer;
     std::vector<Operation*> _startupOperations;
     std::vector<Operation*> _finishOperations;
     std::vector<Operation*> _internalStartup;
