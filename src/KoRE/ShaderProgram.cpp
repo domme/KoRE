@@ -154,17 +154,17 @@ bool kore::ShaderProgram::init() {
   }
 
   constructShaderInputInfo(GL_ACTIVE_ATTRIBUTES, _attributes);
-  for (uint i = 0; i < _attributes.size(); i++) {
-      kore::Log::getInstance()->write("\tAttribute '%s' at location %i\n",
-          _attributes[i].name.c_str(),
-          _attributes[i].location);
-  }
+  //for (uint i = 0; i < _attributes.size(); i++) {
+  //    kore::Log::getInstance()->write("\tAttribute '%s' at location %i\n",
+  //        _attributes[i].name.c_str(),
+  //        _attributes[i].location);
+  //}
   constructShaderInputInfo(GL_ACTIVE_UNIFORMS, _uniforms);
-  for (uint j = 0; j < _uniforms.size(); j++) {
-      kore::Log::getInstance()->write("\tUniform '%s' at location %i\n",
-          _uniforms[j].name.c_str(),
-          _uniforms[j].location);
-  }
+  //for (uint j = 0; j < _uniforms.size(); j++) {
+  //    kore::Log::getInstance()->write("\tUniform '%s' at location %i\n",
+  //        _uniforms[j].name.c_str(),
+  //        _uniforms[j].location);
+  //}
 
   /*
   /* OpenGL 4.3 or arb_program_interface_query needed
@@ -389,8 +389,8 @@ bool kore::ShaderProgram::checkProgramLinkStatus(const GLuint programHandle,
       "[DEBUG] '%s' program Log %s\n", name.c_str(), shaderlog.c_str());
     KORE_SAFE_DELETE_ARR(infoLog);
   } else {
-    kore::Log::getInstance()->write(
-      "[DEBUG] Program '%s' compiled\n", name.c_str());
+    /*kore::Log::getInstance()->write(
+      "[DEBUG] Program '%s' linked\n", name.c_str());*/
   }
 
   return success == GL_TRUE;

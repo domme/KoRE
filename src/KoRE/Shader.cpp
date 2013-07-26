@@ -82,8 +82,8 @@ bool kore::Shader::checkShaderCompileStatus(const GLuint shaderHandle,
       "[DEBUG] '%s' shader Log %s\n", name.c_str(), shaderlog.c_str());
     KORE_SAFE_DELETE_ARR(infoLog);
   } else {
-    kore::Log::getInstance()->write(
-      "[DEBUG] Shader '%s' compiled\n", name.c_str());
+    /*kore::Log::getInstance()->write(
+      "[DEBUG] Shader '%s' compiled\n", name.c_str());*/
   }
   return success == GL_TRUE;
 }
