@@ -37,3 +37,17 @@ void kore::
   _vTextures.push_back(tex);
   // Tex unit is defined by shader
 }
+
+std::vector<const Texture*>
+  kore::TexturesComponent::
+  getTextures(const ETextureSemantics texSemantic) const {
+      std::vector<const Texture*> texList;
+
+      for (uint i = 0; i < _vTextures.size(); ++i) {
+        if (_vTextures[i]->getSemantics() == texSemantic) {
+          texList.push_back(_vTextures[i]);
+        }
+      }
+
+      return texList;
+}

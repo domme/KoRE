@@ -86,7 +86,7 @@ kore::Texture*
 
     std::string name = filepath.substr(filepath.find_last_of('/')+1);
 
-    if (tex->init(texProperties, name, &imageData[0])) {
+    if (tex->init(texProperties, name, TEXSEMANTICS_UNKNOWN, &imageData[0])) {
       ResourceManager::getInstance()->addTexture(tex);
       std::string url = IDManager::getInstance()->genURL("", filepath, 0);
       IDManager::getInstance()->registerURL(tex->getID(), url);

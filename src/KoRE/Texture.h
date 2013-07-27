@@ -67,6 +67,21 @@ namespace kore {
     GLuint internalFormat;
   };
 
+  enum ETextureSemantics {
+    TEXSEMANTICS_UNKNOWN,
+    TEXSEMANTICS_DIFFUSE,
+    TEXSEMANTICS_NORMAL,
+    TEXSEMANTICS_SPECULAR,
+    TEXSEMANTICS_AMBIENT,
+    TEXSEMANTICS_EMISSIVE,
+    TEXSEMANTICS_HEIGHT,
+    TEXSEMANTICS_SHININESS,
+    TEXSEMANTICS_OPACITY,
+    TEXSEMANTICS_DISPLACEMENT,
+    TEXSEMANTICS_LIGHTMAP,
+    TEXSEMANTICS_REFLECTION
+  };
+
   class Texture : public BaseResource {
   public:
     explicit Texture(void);
@@ -74,10 +89,14 @@ namespace kore {
     inline const STextureProperties& getProperties() const {return _properties;}
     inline GLuint getHandle() const {return _handle;}
     inline const std::string& getName() const {return _resourcepath;}
+    inline const ETextureSemantics getSemantics() const {return _semantics;}
+
+    inline void setSemantics(const ETextureSemantics semantics) {_semantics = semantics;}
 
     /*! \brief Creates and allocates an empty texture.
     * \param properties The requested texture properties.
     * \param name The KoRE-internal name of the Texture (be creative! ;) )
+    * \param semantics The Texture-semantics used to identify the useage of this texture
     * \param pixelData Pointer to the pixels.
              If this parameter is not provided,
              an empty texture will be created (e.g. for use with FBOs)
@@ -85,7 +104,8 @@ namespace kore {
               False if creation failed (see Log for infos why)
     */
     bool init(const STextureProperties& properties, const std::string& name,
-                const GLvoid* pixelData = NULL);
+              const ETextureSemantics semantics = TEXSEMANTICS_UNKNOWN,
+              const GLvoid* pixelData = NULL);
 
     /*! \brief Generates a mipmap-hierarchy for this texture.
     *          Only valid for non-empty textures */
@@ -95,6 +115,7 @@ namespace kore {
     GLuint _handle;
     std:: string _resourcepath;
     STextureProperties _properties;
+    ETextureSemantics _semantics;
 
     void destroy();
   };

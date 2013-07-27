@@ -26,6 +26,7 @@
 kore::Texture::Texture()
                     : _handle(KORE_GLUINT_HANDLE_INVALID),
                       _resourcepath(""),
+                      _semantics(TEXSEMANTICS_UNKNOWN),
                       kore::BaseResource() {
 }
 
@@ -42,10 +43,12 @@ void kore::Texture::destroy() {
   _handle = KORE_GLUINT_HANDLE_INVALID;
   _resourcepath = "";
   _properties = STextureProperties();
+  _semantics = TEXSEMANTICS_UNKNOWN;
 }
 
 bool kore::Texture::init(const STextureProperties& properties,
                            const std::string& name,
+                           const ETextureSemantics semantics, /* = TEXSEMANTICS_UNKNOWN*/
                            const GLvoid* pixelData /*= NULL*/) {
   GLuint texTarget;
 
@@ -163,6 +166,7 @@ bool kore::Texture::init(const STextureProperties& properties,
 
   _resourcepath = name;
   _properties = properties;
+  _semantics = semantics;
 
   return true;
 }

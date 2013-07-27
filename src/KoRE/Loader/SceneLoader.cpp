@@ -470,6 +470,7 @@ void kore::SceneLoader::loadTexType(kore::ResourceManager* resourceMgr,
         Texture* tex = texLoader->loadTexture(std::string(aiTexPath.C_Str()));
 
         if (tex != NULL) {
+          tex->setSemantics(texSemanticsFromAi(aiTexType));
           resourceMgr->addTexture(tex);
         }
       }
@@ -525,8 +526,43 @@ void kore::SceneLoader::addTexTypeToTexList(aiTextureType aiTexType,
       Texture* tex = resourceMgr->getTexture(texID);
 
       if (tex != NULL) {
+        tex->setSemantics(texSemanticsFromAi(aiTexType));
         textures.push_back(tex);
       }
     }
   } 
+}
+
+kore::ETextureSemantics 
+  kore::SceneLoader::texSemanticsFromAi(const aiTextureType type) const {
+    switch (type)
+    {
+        case (aiTextureType_DIFFUSE       ):
+           return TEXSEMANTICS_DIFFUSE;
+        case (aiTextureType_SPECULAR      ):
+          return TEXSEMANTICS_SPECULAR;
+        case (aiTextureType_AMBIENT       ):
+          return TEXSEMANTICS_AMBIENT;
+        case (aiTextureType_EMISSIVE      ):
+          return TEXSEMANTICS_EMISSIVE;
+        case (aiTextureType_HEIGHT        ):
+          return TEXSEMANTICS_HEIGHT;
+        case (aiTextureType_NORMALS       ):
+          return TEXSEMANTICS_NORMAL;
+        case (aiTextureType_SHININESS     ):
+          return TEXSEMANTICS_SHININESS;
+        case (aiTextureType_OPACITY       ):
+          return TEXSEMANTICS_OPACITY;
+        case (aiTextureType_DISPLACEMENT  ):
+          return TEXSEMANTICS_DISPLACEMENT;
+        case (aiTextureType_LIGHTMAP      ):
+          return TEXSEMANTICS_LIGHTMAP;
+        case (aiTextureType_REFLECTION    ):
+          return TEXSEMANTICS_REFLECTION;
+        case (aiTextureType_UNKNOWN       ):
+          return TEXSEMANTICS_UNKNOWN;
+        default: 
+          Log::getInstance()->write("[WARNING] (SceneLoader) aiTextureType not implemented in KoRE!\n");
+          return TEXSEMANTICS_UNKNOWN;
+    }
 }

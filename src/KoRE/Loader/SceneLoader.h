@@ -54,6 +54,7 @@ namespace kore {
                         const aiScene* aiscene,
                         const std::string& szScenePath);
     glm::mat4 glmMatFromAiMat(const aiMatrix4x4& aiMat) const;
+    ETextureSemantics texSemanticsFromAi(const aiTextureType type) const;
 
     void loadMaterialProperties(Material* koreMat, const aiMaterial* aiMat);
 

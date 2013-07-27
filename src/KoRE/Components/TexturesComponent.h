@@ -36,6 +36,13 @@ namespace kore {
     
     inline const Texture* getTexture(const uint idx)
     const {if (idx >= _vTextures.size()) return NULL; return _vTextures[idx];}
+
+    /*! \brief Retrieve all textures with the provided semantic (e.g. all NORMAL-maps)
+    *   \param texSemantic The texture semantic to look for.
+    *   \return A list of all textures which have the provided semantic. 
+                May be empty if there is no texture with this semantic. */
+    std::vector<const Texture*>
+      getTextures(const ETextureSemantics texSemantic) const;
     
     void addTexture(Texture* tex,
                     const bool useMipMaps = true,
