@@ -44,6 +44,7 @@ namespace kore {
     static const std::string RESOURCE_PATH_INTERNAL;
 
     static ResourceManager *getInstance(void);
+    virtual ~ResourceManager(void);
 
     /*! \brief saves KoRE's status
     */
@@ -212,7 +213,7 @@ namespace kore {
 
   private:
     ResourceManager(void);
-    virtual ~ResourceManager(void);
+    
 
     std::vector<kore::TextureSampler*> _textureSamplers;
 

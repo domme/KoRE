@@ -91,6 +91,7 @@ namespace kore {
   class RenderManager {
   public:
     static RenderManager *getInstance(void);
+    virtual ~RenderManager(void);
     
     /*! \brief Returns the current screen-resolution.
      * This value is the current pixel-size of the output-window and is
@@ -165,7 +166,7 @@ namespace kore {
 
   private:
     RenderManager(void);
-    virtual ~RenderManager(void);
+    
     void resolutionChanged();
 
     glm::ivec2 _screenRes;

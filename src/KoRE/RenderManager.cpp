@@ -125,7 +125,7 @@ const glm::ivec4& kore::RenderManager::getViewport() const {
 void kore::RenderManager::setViewport(const glm::ivec4& newViewport) {
    if(newViewport == _viewport) {
      return; 
-   } else{
+   } else {
      _viewport = newViewport;
      glViewport(_viewport.x,_viewport.y,_viewport.z,_viewport.w);
      resolutionChanged();
@@ -392,7 +392,7 @@ void kore::RenderManager::setColorMask(bool red,
 
 void kore::RenderManager::setGLcapability(GLuint cap, bool enable) {
   if (glIsEnabled(cap) == static_cast<GLboolean>(enable)) {
-    return;
+   // return;
   }
 
   if (enable) {

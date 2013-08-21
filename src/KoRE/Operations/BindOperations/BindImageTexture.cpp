@@ -62,18 +62,21 @@ void kore::BindImageTexture::
       return;
     }
 
-	_access = access;
+  _access = access;
     _componentUniform = texData;
     _shaderUniform = shaderInput;
 }
 
 void kore::BindImageTexture::doExecute(void) const {
-  GLerror::gl_ErrorCheckStart();
-
   _renderManager->
     useShaderProgram(_shaderUniform->shader->getProgramLocation());
+
+  GLerror::gl_ErrorCheckStart();
   glUniform1i(_shaderUniform->location, _shaderUniform->imgUnit);
+  GLerror::gl_ErrorCheckFinish("BindImageTexture::execute");
   STextureInfo* pTexInfo = static_cast<STextureInfo*>(_componentUniform->data); 
+
+ // Log::getInstance()->write("ImageUnit = %u\n", _shaderUniform->imgUnit);
 
   glBindImageTexture(_shaderUniform->imgUnit,
                      pTexInfo->texLocation,
@@ -82,8 +85,6 @@ void kore::BindImageTexture::doExecute(void) const {
                      0,
                      _access,
                      pTexInfo->internalFormat);
-
-  GLerror::gl_ErrorCheckFinish("BindImageTexture::execute");
 }
 
 void kore::BindImageTexture::update(void) {

@@ -19,6 +19,8 @@
 
 #include <vector>
 #include <string>
+#include <sstream>
+
 #include "KoRE/ShaderProgram.h"
 #include "KoRE/Log.h"
 #include "KoRE/Operations/Operation.h"
@@ -264,9 +266,36 @@ void kore::ShaderProgram::constructShaderInputInfo(const GLenum activeType,
     element.location = iElementLoc;
     element.programHandle = _programHandle;
     element.shader = this;
+    
+    if (element.size == 1 || !element.isImageType()) {
+      rInputVector.push_back(element);
+    }
 
-    rInputVector.push_back(element);
+    else {  // For image types: add each array element as a new shaderInput
+      for (uint iElement = 0; iElement < element.size; ++iElement) {
+        ShaderInput currElement = element;
+        currElement.size = 1;
+        currElement.location += iElement;
+        
+        std::size_t posBracket = currElement.name.find_first_of("[");
+        if (posBracket != std::string::npos) {
+          currElement.name = currElement.name.substr(0, posBracket);
+        }
+
+        std::stringstream ss;
+        ss << "[" << iElement << "]";
+        currElement.name += ss.str();
+
+        rInputVector.push_back(currElement);
+      }
+    } 
   }
+
+
+
+
+
+
 
   /*
   /* OpenGL 4.3 or arb_program_interface_query needed 
@@ -310,8 +339,8 @@ void kore::ShaderProgram::constructShaderInputInfo(const GLenum activeType,
       // but don't create a sampler.
       else if (rInputVector[i].isImageType()) {
         rInputVector[i].imgUnit = imgUnit;
-        ++imgUnit;
-      
+        imgUnit++;
+
         _imgAccessParams.push_back(GL_READ_WRITE);
       }
       
