@@ -37,6 +37,8 @@ namespace kore {
   private:
     static bool checkShaderCompileStatus(const GLuint shaderHandle,
                                          const std::string& name);
+    bool readTextFileLines(const std::string& szFileName,
+                           std::vector<std::string>& rvLines);
 
     GLuint _handle;
     std::string _code;
