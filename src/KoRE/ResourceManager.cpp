@@ -451,3 +451,22 @@ kore::IndexedBuffer*
   
   return NULL;
 }
+
+bool kore::ResourceManager::
+  isShaderProgramLoaded(const std::string& key) {
+    return _loadedShaderPrograms.find(key) != _loadedShaderPrograms.end();
+}
+
+ShaderProgram* kore::ResourceManager::
+  getLoadedShaderProgram(const std::string& key) {
+    if (!isShaderProgramLoaded(key)) {
+      return NULL;
+    }
+
+    return _loadedShaderPrograms.find(key)->second;
+}
+
+void kore::ResourceManager::
+  registerLoadedShaderProgram(const std::string& key, ShaderProgram* program) {
+    _loadedShaderPrograms[key] = program;
+}

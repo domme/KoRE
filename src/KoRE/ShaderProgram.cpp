@@ -121,63 +121,103 @@ kore::Shader* kore::ShaderProgram::getShader(GLenum shadertype) {
 }
 
 bool kore::ShaderProgram::init() {
-  if (_programHandle != KORE_GLUINT_HANDLE_INVALID) {
-    destroyProgram();
-  }
-
-  _programHandle = glCreateProgram();
+  std::string shaderKey = "";
   
   if (_vertex_prog) {
-    glAttachShader(_programHandle, _vertex_prog->getHandle());
+    shaderKey += _vertex_prog->getName();
   }
 
   if (_fragment_prog) {
-    glAttachShader(_programHandle, _fragment_prog->getHandle());
+    shaderKey += _fragment_prog->getName();
   }
 
   if (_geometry_prog) {
-    glAttachShader(_programHandle, _geometry_prog->getHandle());
+    shaderKey += _geometry_prog->getName();
   }
 
   if (_tess_ctrl) {
-    glAttachShader(_programHandle, _tess_ctrl->getHandle());
+    shaderKey += _tess_ctrl->getName();
   }
 
   if (_tess_eval) {
-    glAttachShader(_programHandle, _tess_eval->getHandle());
+    shaderKey += _tess_eval->getName();
   }
 
-  glLinkProgram(_programHandle);
-    
-  bool success = checkProgramLinkStatus(_programHandle, _name);
-  if (!success) {
+  ResourceManager* resMgr = ResourceManager::getInstance();
+  if (resMgr->isShaderProgramLoaded(shaderKey)) {
+    ShaderProgram* sProg = resMgr->getLoadedShaderProgram(shaderKey);
+    this->_programHandle = sProg->_programHandle;
+    this->_outputs = sProg->_outputs;
+    this->_uniforms = sProg->_uniforms;
+    this->_attributes = sProg->_attributes;
+    this->_vSamplers = sProg->_vSamplers;
+  }
+
+  else {
+    if (_programHandle != KORE_GLUINT_HANDLE_INVALID) {
     destroyProgram();
-    return false;
+    }
+
+    _programHandle = glCreateProgram();
+  
+    if (_vertex_prog) {
+      glAttachShader(_programHandle, _vertex_prog->getHandle());
+    }
+
+    if (_fragment_prog) {
+      glAttachShader(_programHandle, _fragment_prog->getHandle());
+    }
+
+    if (_geometry_prog) {
+      glAttachShader(_programHandle, _geometry_prog->getHandle());
+    }
+
+    if (_tess_ctrl) {
+      glAttachShader(_programHandle, _tess_ctrl->getHandle());
+    }
+
+    if (_tess_eval) {
+      glAttachShader(_programHandle, _tess_eval->getHandle());
+    }
+
+    glLinkProgram(_programHandle);
+    
+    bool success = checkProgramLinkStatus(_programHandle, _name);
+    if (!success) {
+      destroyProgram();
+      return false;
+    }
+
+    constructShaderInputInfo(GL_ACTIVE_ATTRIBUTES, _attributes);
+    //for (uint i = 0; i < _attributes.size(); i++) {
+    //    kore::Log::getInstance()->write("\tAttribute '%s' at location %i\n",
+    //        _attributes[i].name.c_str(),
+    //        _attributes[i].location);
+    //}
+    constructShaderInputInfo(GL_ACTIVE_UNIFORMS, _uniforms);
+    //for (uint j = 0; j < _uniforms.size(); j++) {
+    //    kore::Log::getInstance()->write("\tUniform '%s' at location %i\n",
+    //        _uniforms[j].name.c_str(),
+    //        _uniforms[j].location);
+    //}
+
+    /*
+    /* OpenGL 4.3 or arb_program_interface_query needed
+    /*
+    constructShaderOutputInfo(_outputs);
+    for (uint j = 0; j < _outputs.size(); j++) {
+        kore::Log::getInstance()->write("\tOutput '%s'\n",
+            _outputs[j].name.c_str());
+    }
+    */
+
+    // Store in cache
+    resMgr->registerLoadedShaderProgram(shaderKey, this);
+
+    return success == GL_TRUE;
   }
 
-  constructShaderInputInfo(GL_ACTIVE_ATTRIBUTES, _attributes);
-  //for (uint i = 0; i < _attributes.size(); i++) {
-  //    kore::Log::getInstance()->write("\tAttribute '%s' at location %i\n",
-  //        _attributes[i].name.c_str(),
-  //        _attributes[i].location);
-  //}
-  constructShaderInputInfo(GL_ACTIVE_UNIFORMS, _uniforms);
-  //for (uint j = 0; j < _uniforms.size(); j++) {
-  //    kore::Log::getInstance()->write("\tUniform '%s' at location %i\n",
-  //        _uniforms[j].name.c_str(),
-  //        _uniforms[j].location);
-  //}
-
-  /*
-  /* OpenGL 4.3 or arb_program_interface_query needed
-  /*
-  constructShaderOutputInfo(_outputs);
-  for (uint j = 0; j < _outputs.size(); j++) {
-      kore::Log::getInstance()->write("\tOutput '%s'\n",
-          _outputs[j].name.c_str());
-  }
-  */
-  return success == GL_TRUE;
+  return true;
 }
 
 GLuint kore::ShaderProgram::getAttributeLocation(const std::string &name) {

@@ -134,6 +134,13 @@ namespace kore {
     void removeShaderProgram(const ShaderProgram* program);
 
 
+    bool isShaderProgramLoaded(const std::string& key);
+
+    ShaderProgram* getLoadedShaderProgram(const std::string& key);
+
+    void registerLoadedShaderProgram(const std::string& key, ShaderProgram* program);
+
+
 
     /*! \brief Adds a framebuffer to the ResourceManager. This framebuffer will
     *          now be controlled and deleted by the resourceManager alone.
@@ -221,6 +228,7 @@ namespace kore {
     std::map<uint64, Mesh*> _meshes;  // id || mesh
     std::map<uint64, kore::Texture*> _textures;  // id || texture    
     std::map<uint64, ShaderProgram*> _shaderPrograms;  // id || program
+    std::map<std::string, ShaderProgram*> _loadedShaderPrograms;  // key || program
     std::map<uint64, kore::FrameBuffer*> _frameBuffers; // name,  || framebuffer
     std::map<uint64, Material*> _materials;
     std::map<uint64, IndexedBuffer*> _indexedBuffers;
