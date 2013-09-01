@@ -109,7 +109,7 @@ void kore::Shader::loadShaderCode(const std::string& file, GLenum shadertype) {
       }
 
       if(vInsertLines.size() > 0) {
-        vLines.insert( iterIncludeLine, vInsertLines.begin(), vInsertLines.end() );
+        vLines.insert( vLines.end(), vInsertLines.begin(), vInsertLines.end() );
       }
     }
 
