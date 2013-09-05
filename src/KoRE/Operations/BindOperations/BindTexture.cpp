@@ -62,6 +62,7 @@ void kore::BindTexture::doExecute(void) const {
   glUniform1i(_shaderUniform->location,
               static_cast<GLint>(_shaderUniform->texUnit));
   STextureInfo* pTexInfo = static_cast<STextureInfo*>(_componentUniform->data);
+
   const TextureSampler* pSampler =
     _shaderUniform->shader->getSampler(_shaderUniform->texUnit);
 

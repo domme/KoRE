@@ -88,12 +88,18 @@ namespace kore {
     void setSamplerProperties(const uint idx,
                               const TexSamplerProperties& properties);
 
+    void setSamplerProperties(const std::string& uniformName,
+                              const TexSamplerProperties& properties);
+
     /*! \brief Set a new name for the ShaderProgram
      * \param name The new name
      */
     inline void setName(const std::string& name){_name = name;}
 
     void removeShaders();
+
+    void startUniformBindingCheck();
+    void finishUniformBindingCheck();
 
 
   private:
@@ -116,6 +122,9 @@ namespace kore {
     std::vector<GLuint> _imgAccessParams;
 
     std::vector<const TextureSampler*> _vSamplers;
+
+    mutable std::vector<uint> _tagList;
+    bool _uniformCheckInProcess;
 
     Shader* _vertex_prog;
     Shader* _geometry_prog;

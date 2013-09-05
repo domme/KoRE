@@ -39,6 +39,7 @@ kore::ShaderProgram::ShaderProgram()
   _fragment_prog(NULL),
   _tess_ctrl(NULL),
   _tess_eval(NULL),
+  _uniformCheckInProcess(false),
   kore::BaseResource() {
 }
 
@@ -483,7 +484,13 @@ const kore::ShaderInput*
 kore::ShaderProgram::getUniform(const std::string& name) const {
   for (uint i = 0; i < _uniforms.size(); ++i) {
     if (_uniforms[i].name == name) {
-      return &_uniforms[i];
+      const kore::ShaderInput* foundInput = &_uniforms[i];
+      
+      if (_uniformCheckInProcess) {
+        _tagList.push_back(i);
+      }
+
+      return foundInput;
     }
   }
 
@@ -506,6 +513,17 @@ void kore::ShaderProgram::setSamplerProperties(const uint idx,
                                     requestTextureSampler(properties);
 }
 
+void kore::ShaderProgram::setSamplerProperties(const std::string& uniformName,
+                                               const TexSamplerProperties& properties) {
+  for (uint i = 0; i < _uniforms.size(); ++i) {
+    if (_uniforms[i].name == uniformName &&
+        _uniforms[i].isSamplerType()) {
+          setSamplerProperties(_uniforms[i].texUnit, properties);
+          return;
+    }
+  }
+}
+
 const GLuint kore::ShaderProgram::
   getImageAccessParam(const uint imgUnit) const {
     if (imgUnit < _imgAccessParams.size()) {
@@ -520,4 +538,35 @@ void kore::ShaderProgram::setImageAccessParam(const uint imgUnit,
    if (imgUnit < _imgAccessParams.size()) {
      _imgAccessParams[imgUnit] = access;
    }
+}
+
+void kore::ShaderProgram::startUniformBindingCheck() {
+  _tagList.clear();
+  _uniformCheckInProcess = true;
+}
+
+void kore::ShaderProgram::finishUniformBindingCheck() {
+  if (!_uniformCheckInProcess) {
+    return;
+  }
+
+  for (uint iUniform = 0;  iUniform < _uniforms.size(); ++iUniform) {
+
+    bool isTagged = false;
+    for (uint iTag = 0; iTag < _tagList.size(); ++iTag) {
+       if (_tagList[iTag] == iUniform) {
+         isTagged = true;
+       }
+    }
+
+    if (!isTagged) {
+      Log::getInstance()->write("[WARNING] Shader %s: The active uniform %s " 
+                                "was not bound to the shader!\n",
+                                this->_name.c_str(),
+                                _uniforms[iUniform].name.c_str());
+    }
+  }
+
+  _uniformCheckInProcess = false;
+  _tagList.clear();
 }
