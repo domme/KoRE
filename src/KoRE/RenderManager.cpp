@@ -200,12 +200,16 @@ void kore::RenderManager::useShaderProgram(const GLuint shaderProgram) {
 void kore::RenderManager::bindTexture(const GLuint textureUnit,
                                       const GLuint textureTarget,
                                       const GLuint textureHandle) {
+                                        activeTexture(textureUnit);
+                                        glBindTexture(textureTarget, textureHandle);
+/*
   uint uTexTargetIndex = _vTexTargetMap[textureTarget];
   if (_boundTextures[textureUnit][uTexTargetIndex] != textureHandle) {
     activeTexture(textureUnit);
     glBindTexture(textureTarget, textureHandle);
     _boundTextures[textureUnit][uTexTargetIndex] = textureHandle;
   }
+  */
 }
 
 void kore::RenderManager::bindTexture(const GLuint textureTarget,
@@ -233,6 +237,10 @@ void kore::RenderManager::activeTexture(const GLuint activeTextureUnitIndex) {
 
 void kore::RenderManager::bindFrameBuffer(const GLuint fboTarget,
                                           const GLuint fboHandle) {
+
+    glBindFramebuffer(fboTarget, fboHandle);                                            
+  
+    /*
   if (fboTarget == GL_FRAMEBUFFER) {
     if (_boundFrameBuffers[READ_FRAMEBUFFER] != fboHandle ||
         _boundFrameBuffers[DRAW_FRAMEBUFFER] != fboHandle) {
@@ -253,7 +261,7 @@ void kore::RenderManager::bindFrameBuffer(const GLuint fboTarget,
         _shaderProgram = KORE_GLUINT_HANDLE_INVALID;
       }
     }
-  }
+  } */
 }
 
 void kore::RenderManager::addFramebufferStage(FrameBufferStage* stage) {
