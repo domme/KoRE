@@ -20,18 +20,26 @@
 #include "KoRE/Passes/ShaderProgrampass.h"
 #include "KoRE/Operations/UseShaderProgram.h"
 #include "KoRE/Log.h"
+#include "../GPUtimer.h"
+#include "../Operations/FunctionOp.h"
 
 
 kore::ShaderProgramPass::ShaderProgramPass(void)
   : _program(NULL),
     _executionType(EXECUTE_REPEATING),
-    _executed(false) {
+    _executed(false),
+    _timerQuery(0),
+    _useGPUProfiling(false),
+    _name("UNNAMED PASS") {
 }
 
 kore::ShaderProgramPass::ShaderProgramPass(ShaderProgram* prog)
   : _program(NULL),
     _executionType(EXECUTE_REPEATING),
-    _executed(false) {
+    _executed(false),
+    _timerQuery(0),
+    _useGPUProfiling(false),
+    _name("UNNAMED PASS") {
   setShaderProgram(prog);
 }
 
@@ -67,7 +75,13 @@ void kore::ShaderProgramPass::setShaderProgram(ShaderProgram* program) {
 
   UseShaderProgram* pUseProgram = new UseShaderProgram;
   pUseProgram->connect(program);
-
+  
+  if (_useGPUProfiling) {
+    _internalStartup.push_back(
+      new FunctionOp(std::bind(&kore::ShaderProgramPass::startQuery, this)));
+    _internalFinish.push_back(
+      new FunctionOp(std::bind(&kore::ShaderProgramPass::endQuery, this)));
+  }
   _internalStartup.push_back(pUseProgram);
 }
 
@@ -125,4 +139,12 @@ void kore::ShaderProgramPass::removeFinishOperation(Operation* op) {
   if(it != _finishOperations.end()) {
     _finishOperations.erase(it);
   }
+}
+
+void kore::ShaderProgramPass::startQuery() {
+  _timerQuery = GPUtimer::getInstance()->startDurationQuery(this->_name);
+} 
+
+void kore::ShaderProgramPass::endQuery() {
+  GPUtimer::getInstance()->endDurationQuery(_timerQuery);
 }

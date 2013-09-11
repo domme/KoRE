@@ -39,7 +39,8 @@ kore::RenderManager::RenderManager(void)
     _viewport(0,0,0,0),
     _activeTextureUnitIndex(0),
     _screenRes(0,0),
-    _shaderProgram(KORE_GLUINT_HANDLE_INVALID){
+    _shaderProgram(KORE_GLUINT_HANDLE_INVALID),
+    _useGPUprofiling(false) {
 
   //sync internal states with opengl-states:
   

@@ -28,6 +28,7 @@
 #include "KoRE/ShaderProgram.h"
 #include "KoRE/Passes/FrameBufferStage.h"
 #include "KoRE/Optimization/Optimizer.h"
+#include "KoRE/GPUtimer.h"
 
 namespace kore {
   enum EOpInsertPos {
@@ -164,6 +165,14 @@ namespace kore {
     void activeTexture(const GLuint activeTextureUnitIndex);
     //////////////////////////////////////////////////////////////////////////
 
+    inline void setUseGPUprofiling(const bool useProfiling) {
+      _useGPUprofiling = useProfiling;
+    }
+
+    inline bool getUseGPUpfofiling() const {
+      return _useGPUprofiling;
+    }
+
   private:
     RenderManager(void);
     
@@ -197,6 +206,8 @@ namespace kore {
     std::map<GLuint, uint> _vTexTargetMap;
     std::map<GLuint, uint> _vBufferTargetMap;
     kore::ShaderData _shdScreenRes;
+
+    bool _useGPUprofiling;
     //////////////////////////////////////////////////////////////////////////
   };
 };

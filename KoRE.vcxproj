@@ -124,6 +124,7 @@
     <ClCompile Include="src\KoRE\Components\MaterialComponent.cpp" />
     <ClCompile Include="src\KoRE\Components\TexturesComponent.cpp" />
     <ClCompile Include="src\KoRE\FrameBuffer.cpp" />
+    <ClCompile Include="src\KoRE\GPUtimer.cpp" />
     <ClCompile Include="src\KoRE\IDManager.cpp" />
     <ClCompile Include="src\KoRE\IndexedBuffer.cpp" />
     <ClCompile Include="src\KoRE\Loader\lodepng.cpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="src\KoRE\Events.h" />
     <ClInclude Include="src\KoRE\FrameBuffer.h" />
     <ClInclude Include="src\KoRE\GLerror.h" />
+    <ClInclude Include="src\KoRE\GPUtimer.h" />
     <ClInclude Include="src\KoRE\IDManager.h" />
     <ClInclude Include="src\KoRE\IndexedBuffer.h" />
     <ClInclude Include="src\KoRE\Loader\lodepng.h" />

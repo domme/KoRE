@@ -182,6 +182,9 @@
     <ClCompile Include="src\KoRE\Operations\ClearOp.cpp">
       <Filter>src\Operations</Filter>
     </ClCompile>
+    <ClCompile Include="src\KoRE\GPUtimer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\KoRE\Operations\SelectNodes.h">
@@ -379,6 +382,9 @@
     </ClInclude>
     <ClInclude Include="src\KoRE\Operations\ClearOp.h">
       <Filter>src\Operations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\KoRE\GPUtimer.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

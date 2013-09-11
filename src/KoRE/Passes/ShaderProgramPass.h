@@ -63,8 +63,9 @@ namespace kore {
     inline void setExecuted(bool executed) {_executed = executed;}
     inline const bool getExecuted() const {return _executed;}
 
-
-  private:
+    inline const std::string& getName() const {return _name;}
+    
+  protected:
     uint64 _id;
     ShaderProgram* _program;
 
@@ -76,6 +77,14 @@ namespace kore {
 
     EOperationExecutionType _executionType;
     bool _executed;
+
+    std::string _name;
+    
+    GLuint _timerQuery;
+    void startQuery();
+    void endQuery();
+    bool _useGPUProfiling;
+
   };
 
 }
