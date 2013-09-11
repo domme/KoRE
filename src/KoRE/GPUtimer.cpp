@@ -44,16 +44,14 @@ GPUtimer::~GPUtimer() {
   }
 }
 
-GLuint GPUtimer::queryTimestamp(const std::string& name) {
-  GLuint queryID;
-  glGenQueries(1, &queryID);
+void GPUtimer::queryTimestamp(const std::string& name, GLuint queryObject) {
+  if (std::find(_queryObjects.begin(), _queryObjects.end(), queryObject) 
+    == _queryObjects.end()) {
 
-  glQueryCounter(queryID, GL_TIMESTAMP);
-
-  _queryObjects.push_back(queryID);
-  _queryNames[queryID] = name;
-
-  return queryID;
+      glQueryCounter(queryObject, GL_TIMESTAMP);
+      _queryObjects.push_back(queryObject);
+      _queryNames[queryObject] = name;
+  }
 }
 
 void GPUtimer::checkQueryResults() {
@@ -108,28 +106,20 @@ void GPUtimer::removeQueryResult(const uint queryID) {
 
 
 
-GLuint GPUtimer::startDurationQuery(const std::string& name) {
-  GLuint queryObject = queryTimestamp(name);
-
-  _durationQueries[queryObject] = 0;
-
-  return queryObject;
+void GPUtimer::startDurationQuery(const std::string& name, GLuint queryObject) {
+  queryTimestamp(name, queryObject);
 }
 
 void GPUtimer::endDurationQuery(const uint startQueryID) {
   auto iter = _durationQueries.find(startQueryID);
 
+  GLuint endQuery = 0;
   if (iter == _durationQueries.end()) {
-    // No entry in the durationQuery-table. 
-    // This queryID was not created using startDurationQuery...
-    return;
+    // No entry in the durationQuery-table yet. 
+    glGenQueries(1, &endQuery);
   }
-
-  if (iter->second != 0) {
-    return;  // There is already a ongoing end-query registered...
-  }
-  
-  GLuint endQuery = queryTimestamp("");
+    
+  queryTimestamp("", endQuery);
   _durationQueries[startQueryID] = endQuery;
 }
 

@@ -64,6 +64,9 @@ namespace kore {
     inline const bool getExecuted() const {return _executed;}
 
     inline const std::string& getName() const {return _name;}
+    inline std::string* getNamePtr() {return &_name;}
+
+    inline GLuint getTimerQueryObject() const {return _timerQuery;}
     
   protected:
     uint64 _id;

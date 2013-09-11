@@ -41,9 +41,9 @@ namespace kore {
     static GPUtimer* getInstance();
     ~GPUtimer();
 
-    GLuint queryTimestamp(const std::string& name);
+    void queryTimestamp(const std::string& name, GLuint queryObject);
 
-    GLuint startDurationQuery(const std::string& name);
+    void startDurationQuery(const std::string& name, GLuint queryObject);
     void endDurationQuery(const uint startQueryID);
 
     void checkQueryResults();

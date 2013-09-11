@@ -142,7 +142,11 @@ void kore::ShaderProgramPass::removeFinishOperation(Operation* op) {
 }
 
 void kore::ShaderProgramPass::startQuery() {
-  _timerQuery = GPUtimer::getInstance()->startDurationQuery(this->_name);
+  if (_timerQuery == 0) {
+    glGenQueries(1, &_timerQuery);
+  }
+
+  GPUtimer::getInstance()->startDurationQuery(this->_name, _timerQuery);
 } 
 
 void kore::ShaderProgramPass::endQuery() {
