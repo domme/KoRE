@@ -69,13 +69,13 @@ void kore::ShaderProgram::removeShaders() {
 
 
 void kore::ShaderProgram::loadShader(const std::string& file,
-                                     GLenum shadertype) {
+                                     GLenum shadertype, std::string defines /* = "" */) {
   kore::Shader* shader = NULL;
-  uint64 sid = kore::IDManager::getInstance()->getID(file);
+  uint64 sid = kore::IDManager::getInstance()->getID(defines + file);
   if(sid == 0) {  // Shader not found in cache.
     shader = new kore::Shader();
-    shader->loadShaderCode(file, shadertype);
-    kore::IDManager::getInstance()->registerURL(shader->getID(), file);
+    shader->loadShaderCode(file, shadertype, defines);
+    kore::IDManager::getInstance()->registerURL(shader->getID(), defines + file);
   } else {
     shader = kore::ResourceManager::getInstance()->getShader(sid);
   }

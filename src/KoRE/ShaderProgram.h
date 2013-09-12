@@ -36,7 +36,7 @@ namespace kore {
     ShaderProgram();
     virtual ~ShaderProgram(void);
     /// load a single shader from file
-    void loadShader(const std::string& file, GLenum shadertype);
+    void loadShader(const std::string& file, GLenum shadertype, std::string defines = "");
     /// Returns the attached shader of given type, else NULL
     Shader* getShader(GLenum shadertype);
     /// compile and link shader program

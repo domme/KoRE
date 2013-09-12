@@ -56,9 +56,10 @@ bool Shader::readTextFileLines(const std::string& szFileName,
   return false;
 }
 
-void kore::Shader::loadShaderCode(const std::string& file, GLenum shadertype) {
+void kore::Shader::loadShaderCode(const std::string& file, GLenum shadertype, std::string defines /* = "" */) {
   std::string shaderCode = "";
   std::vector<std::string> vLines;
+
   if(!readTextFileLines(file, vLines)) {
     Log::getInstance()->write("[ERROR] Could not read shader file %s\n", file.c_str());
   }
@@ -113,8 +114,7 @@ void kore::Shader::loadShaderCode(const std::string& file, GLenum shadertype) {
       }
     }
 
-    
-    shaderCode.clear();
+    shaderCode = defines;
     for(uint uIdx = 0; uIdx < vLines.size(); ++uIdx) {
       shaderCode += vLines[uIdx] + "\n";
     }
@@ -132,7 +132,7 @@ void kore::Shader::loadShaderCode(const std::string& file, GLenum shadertype) {
   if (!bSuccess) {
     glDeleteShader(_handle);
   }
-  _name = file.substr(file.find_last_of("/")+1);
+  _name = defines + file.substr(file.find_last_of("/")+1);
   kore::ResourceManager::getInstance()->addShader(this);
 }
 

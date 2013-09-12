@@ -28,7 +28,7 @@ namespace kore {
     Shader(void);
     ~Shader(void);
 
-    void loadShaderCode(const std::string& file, GLenum shadertype);
+    void loadShaderCode(const std::string& file, GLenum shadertype, std::string defines = "");
     inline const std::string& getName(void){return _name;}
     inline GLenum getHandle(void){return _handle;}
     inline const std::string& getCode(void){return _code;}
