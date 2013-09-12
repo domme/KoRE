@@ -27,6 +27,8 @@
 #ifndef GPUTIMER_H_
 #define  GPUTIMER_H_
 
+#include <list>
+
 #include "KoRE/Common.h"
 
 namespace kore {
@@ -49,9 +51,9 @@ namespace kore {
     void checkQueryResults();
     GLuint64 getDurationMS(const uint startQueryID);
 
-    bool isQueryResultAvailable(const uint queryID);
+    bool isTimestampAvailable(const uint queryID);
     GLuint64 getQueryResult(const uint queryID);
-    std::vector<SDurationResult> getDurationResultsMS();
+    void getDurationResultsMS(std::vector<SDurationResult>& rvResults);
     const std::string& getQueryName(const uint queryID);
     void removeQueryResult(const uint queryID);
     void removeDurationQuery(const uint startQueryID);
@@ -59,10 +61,10 @@ namespace kore {
   private:
     GPUtimer();
 
-    std::vector<GLuint> _queryObjects;
-    std::vector<GLuint> _finishedQueryObjects;
+    std::list<GLuint> _queryObjects;
     std::map<GLuint, std::string> _queryNames;
     std::map<GLuint, GLuint> _durationQueries;
+    std::map<GLuint, GLuint64> _timestamps;
   };
 }
 

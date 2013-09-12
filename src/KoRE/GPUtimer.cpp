@@ -28,6 +28,8 @@
 
 using namespace kore;
 
+#define TIMING_NOT_AVAILABLE 0xFFFFFFFFFFFFFFFF
+
 GPUtimer* GPUtimer::getInstance() {
   static GPUtimer instance;
   return &instance;
@@ -39,52 +41,56 @@ GPUtimer::GPUtimer() {
 }
 
 GPUtimer::~GPUtimer() {
-  if (_queryObjects.size() > 0) {
-    glDeleteQueries(_queryObjects.size(), &_queryObjects[0]);
+  
+  for (auto iter = _queryObjects.begin(); iter != _queryObjects.end(); iter++) {
+    GLuint val = (*iter);
+    glDeleteQueries(1, &val);
   }
 }
 
 void GPUtimer::queryTimestamp(const std::string& name, GLuint queryObject) {
   if (std::find(_queryObjects.begin(), _queryObjects.end(), queryObject) 
-    == _queryObjects.end()) {
-
-      glQueryCounter(queryObject, GL_TIMESTAMP);
+    == _queryObjects.end())
+  {
       _queryObjects.push_back(queryObject);
       _queryNames[queryObject] = name;
+      glQueryCounter(queryObject, GL_TIMESTAMP);
   }
 }
 
 void GPUtimer::checkQueryResults() {
   std::vector<GLuint> finishedList;
 
-  for (uint i = 0; i < _queryObjects.size(); ++i) {
+  for (auto iter = _queryObjects.begin(); iter != _queryObjects.end(); iter++) {
+
     GLuint available = GL_FALSE;
-    glGetQueryObjectuiv(_queryObjects[i], GL_QUERY_RESULT_AVAILABLE, &available);
+    glGetQueryObjectuiv((*iter), GL_QUERY_RESULT_AVAILABLE, &available);
     
     if (available) {
-      finishedList.push_back(_queryObjects[i]);
+      finishedList.push_back((*iter));
     }
   }
 
   for (uint i = 0; i < finishedList.size(); ++i) {
     // Remove from queryObjects-list
-    _queryObjects.erase(std::find(_queryObjects.begin(), _queryObjects.end(), finishedList[i]));
-    
-    // Add to finished-list
-    _finishedQueryObjects.push_back(finishedList[i]);
+    _queryObjects.erase(std::find(_queryObjects.begin(),
+                                  _queryObjects.end(),
+                                  finishedList[i]));
+
+
+    GLuint64 result;
+    glGetQueryObjectui64v(finishedList[i], GL_QUERY_RESULT, &result);
+    _timestamps[finishedList[i]] = result;
   }
 }
 
-bool GPUtimer::isQueryResultAvailable(const uint queryID) {
-  return std::find(_finishedQueryObjects.begin(),
-                   _finishedQueryObjects.end(),
-                   queryID) !=  _finishedQueryObjects.end();
-}
 
 GLuint64 GPUtimer::getQueryResult(const uint queryID) {
-  GLuint64 result;
-  glGetQueryObjectui64v(queryID, GL_QUERY_RESULT, &result);
-  return result;
+  if (isTimestampAvailable(queryID)) {
+    return _timestamps[queryID];
+  }
+
+  return TIMING_NOT_AVAILABLE;
 }
 
 const std::string& GPUtimer::getQueryName(const uint queryID) {
@@ -92,18 +98,13 @@ const std::string& GPUtimer::getQueryName(const uint queryID) {
 }
 
 void GPUtimer::removeQueryResult(const uint queryID) {
-   if (isQueryResultAvailable(queryID)) {
-     // Remove from finished-list
-     _finishedQueryObjects.erase(
-       std::find(_finishedQueryObjects.begin(),
-       _finishedQueryObjects.end(), queryID));
-
-     glDeleteQueries(1, &queryID);
-   }
-
+   
+   glDeleteQueries(1, &queryID);
+   
    _queryNames.erase(_queryNames.find(queryID));
+   _timestamps.erase(_timestamps.find(queryID));
+   _durationQueries.erase(_durationQueries.find(queryID));
 }
-
 
 
 void GPUtimer::startDurationQuery(const std::string& name, GLuint queryObject) {
@@ -117,10 +118,12 @@ void GPUtimer::endDurationQuery(const uint startQueryID) {
   if (iter == _durationQueries.end()) {
     // No entry in the durationQuery-table yet. 
     glGenQueries(1, &endQuery);
+  } else {
+     endQuery = iter->second;
   }
-    
-  queryTimestamp("", endQuery);
+
   _durationQueries[startQueryID] = endQuery;
+  queryTimestamp("", endQuery);
 }
 
 GLuint64 GPUtimer::getDurationMS(const uint startQueryID) {
@@ -128,40 +131,38 @@ GLuint64 GPUtimer::getDurationMS(const uint startQueryID) {
 
   if (iter == _durationQueries.end()) {
     // No entry in the durationQuery-table. 
-    // This queryID was not created using startDurationQuery...
-    return 0;
+    // endDurationQUery() wasn't called yet
+    return TIMING_NOT_AVAILABLE;
   }
 
-  uint endQueryID = iter->second;
+  GLuint endQueryID = iter->second;
 
-  if (isQueryResultAvailable(startQueryID) 
-      && isQueryResultAvailable(endQueryID)) {
+  if (isTimestampAvailable(startQueryID) 
+      && isTimestampAvailable(endQueryID)) {
         GLuint64 duration = 
           (getQueryResult(endQueryID) - getQueryResult(startQueryID)) / 1000000;
 
         return duration;
   }
 
-  return 0;  // Timestamps are not both available (yet)
+  return TIMING_NOT_AVAILABLE;  // Timestamps are not both available (yet)
 }
 
-std::vector<SDurationResult> GPUtimer::getDurationResultsMS() {
-  std::vector<SDurationResult> results;
-  
+void GPUtimer::getDurationResultsMS(std::vector<SDurationResult>& rvResults) {
+  rvResults.clear();
   for (auto iter = _durationQueries.begin(); iter != _durationQueries.end(); iter++) {
     GLuint queryID = iter->first;
     GLuint64 duration = getDurationMS(queryID);
 
-    if (duration > 0) {
+    if (duration != TIMING_NOT_AVAILABLE) {
       SDurationResult currResult;
       currResult.durationMS = duration;
       currResult.name = getQueryName(queryID);
       currResult.startQueryID = queryID;
-      results.push_back(currResult);
+      rvResults.push_back(currResult);
     }
   }
 
-  return results;
 }
 
 void GPUtimer::removeDurationQuery(const uint startQueryID) {
@@ -179,3 +180,8 @@ void GPUtimer::removeDurationQuery(const uint startQueryID) {
   _durationQueries.erase(iter);
 }
 
+
+bool kore::GPUtimer::isTimestampAvailable( const uint queryID )
+{
+  return _timestamps.find(queryID) != _timestamps.end();
+}
