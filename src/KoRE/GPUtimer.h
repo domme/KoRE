@@ -33,7 +33,7 @@
 
 namespace kore {
   struct SDurationResult {
-    GLuint64 durationMS;
+    GLuint64 durationNS;
     std::string name;
     GLuint startQueryID;
   };

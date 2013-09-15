@@ -140,7 +140,7 @@ GLuint64 GPUtimer::getDurationMS(const uint startQueryID) {
   if (isTimestampAvailable(startQueryID) 
       && isTimestampAvailable(endQueryID)) {
         GLuint64 duration = 
-          (getQueryResult(endQueryID) - getQueryResult(startQueryID)) / 1000000;
+          static_cast<double>(getQueryResult(endQueryID) - getQueryResult(startQueryID));
 
         return duration;
   }
@@ -156,7 +156,7 @@ void GPUtimer::getDurationResultsMS(std::vector<SDurationResult>& rvResults) {
 
     if (duration != TIMING_NOT_AVAILABLE) {
       SDurationResult currResult;
-      currResult.durationMS = duration;
+      currResult.durationNS = duration;
       currResult.name = getQueryName(queryID);
       currResult.startQueryID = queryID;
       rvResults.push_back(currResult);
