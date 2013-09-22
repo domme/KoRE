@@ -56,13 +56,15 @@ namespace kore {
                const std::string& name,
                const GLvoid* data = NULL);
 
+   void destroy();
+
   private:
     GLuint _texHandle;
     GLuint _bufferHandle;
     std:: string _name;
     STextureBufferProperties _properties;
 
-    void destroy();
+    
   };
 }
 #endif  // SRC_KORE_TEXTUREBUFFER_H_

@@ -110,14 +110,15 @@ namespace kore {
     /*! \brief Generates a mipmap-hierarchy for this texture.
     *          Only valid for non-empty textures */
     void genMipmapHierarchy();
-    
+    void destroy();
+
   private:
     GLuint _handle;
     std:: string _resourcepath;
     STextureProperties _properties;
     ETextureSemantics _semantics;
 
-    void destroy();
+    
   };
 }
 #endif  // SRC_KORE_TEXTURE_H_
